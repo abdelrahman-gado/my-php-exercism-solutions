@@ -26,30 +26,26 @@ declare(strict_types=1);
 
 class ResistorColorDuo
 {
+    private const COLORS_MAP = [
+        'black' => 0,
+        'brown' => 1,
+        'red' => 2,
+        'orange' => 3,
+        'yellow' => 4,
+        'green' => 5,
+        'blue' => 6,
+        'violet' => 7,
+        'grey' => 8,
+        'white' => 9
+    ];
+
     public function getColorsValue(array $colors): int
     {
-        $colorVal = ($this->getColorValueFromMap($colors[0]) * 10) + $this->getColorValueFromMap($colors[1]);
-        return $colorVal;
+        return ($this->getColorValueFromMap($colors[0]) * 10) + $this->getColorValueFromMap($colors[1]);
     }
 
     private function getColorValueFromMap(string $color): int
     {
-        return $this->colorsMap()[$color] ?? 0;
-    }
-
-    private function colorsMap(): array
-    {
-        return [
-            'black' => 0,
-            'brown' => 1,
-            'red' => 2,
-            'orange' => 3,
-            'yellow' => 4,
-            'green' => 5,
-            'blue' => 6,
-            'violet' => 7,
-            'grey' => 8,
-            'white' => 9
-        ];
+        return self::COLORS_MAP[$color] ?? 0;
     }
 }
