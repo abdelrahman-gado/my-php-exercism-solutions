@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 function sortWord(string $word): string
 {
-    $wordAsArr = str_split($word);
+    $wordAsArr = mb_str_split($word);
     sort($wordAsArr);
     return implode("", $wordAsArr);
 }
@@ -34,10 +34,11 @@ function sortWord(string $word): string
 function detectAnagrams(string $word, array $anagrams): array
 {
     $anagramsList = [];
-    $sortedWord = sortWord(strtolower($word));
+    $loweredCasedWord = mb_strtolower($word);
+    $sortedWord = sortWord($loweredCasedWord);
     foreach ($anagrams as $anagram) {
-        $lowerAnagram = strtolower($anagram);
-        if ($lowerAnagram === strtolower($word))
+        $lowerAnagram = mb_strtolower($anagram);
+        if ($lowerAnagram === $loweredCasedWord)
             continue;
 
         $sortedAnagramWord = sortWord($lowerAnagram);
