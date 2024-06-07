@@ -25,9 +25,9 @@
 
 declare(strict_types=1);
 
-function removePunctuations(string $text): string
+function sanitize(string $text): string
 {
-    return preg_replace("/[\W]/u", '', $text);
+    return preg_replace("/\W/u", '', $text);
 }
  
 function encodeCharacter(string $character): string 
@@ -39,24 +39,16 @@ function encodeCharacter(string $character): string
 function encode(string $text): string
 {
     $encodedText = '';
-    $text = removePunctuations(strtolower($text));
-    $counter = 0;
+    $text = sanitize(strtolower($text));
 
     foreach (str_split($text) as $ch) {
-        if ($counter === 5) {
-            $counter = 0;
-            $encodedText .= ' ';
-        }
-
         if (is_numeric($ch)) {
             $encodedText .= $ch;
-            $counter++;
             continue;
         }
 
         $encodedText .= encodeCharacter($ch);
-        $counter++;
     }
 
-    return $encodedText;
+    return wordwrap($encodedText, 5, ' ', true);
 }
