@@ -26,12 +26,12 @@ declare(strict_types=1);
 
 class Clock
 {
-    public const DAY_HOURS = 24;
-    public const DAY_MINUTES = 60;
+    private const DAY_HOURS = 24;
+    private const DAY_MINUTES = 60;
     
     public function __construct(
-        public int $hours,
-        public int $minutes = 0
+        private int $hours,
+        private int $minutes = 0
     ) {
         $this->reformat();
     }
@@ -103,7 +103,6 @@ class Clock
     public function __toString(): string
     {
         $this->reformat();
-        $clock = sprintf("%02d:%02d", $this->hours, $this->minutes);
-        return $clock;
+        return sprintf("%02d:%02d", $this->hours, $this->minutes);
     }
 }
