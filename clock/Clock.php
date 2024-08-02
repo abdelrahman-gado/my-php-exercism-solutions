@@ -1,39 +1,16 @@
 <?php
-
-/*
- * By adding type hints and enabling strict type checking, code can become
- * easier to read, self-documenting and reduce the number of potential bugs.
- * By default, type declarations are non-strict, which means they will attempt
- * to change the original type to match the type specified by the
- * type-declaration.
- *
- * In other words, if you pass a string to a function requiring a float,
- * it will attempt to convert the string value to a float.
- *
- * To enable strict mode, a single declare directive must be placed at the top
- * of the file.
- * This means that the strictness of typing is configured on a per-file basis.
- * This directive not only affects the type declarations of parameters, but also
- * a function's return type.
- *
- * For more info review the Concept on strict type checking in the PHP track
- * <link>.
- *
- * To disable strict typing, comment out the directive below.
- */
-
 declare(strict_types=1);
 
 class Clock
 {
-    private const DAY_HOURS = 24;
-    private const DAY_MINUTES = 60;
-    
+    private const HOURS_IN_A_DAY = 24;
+    private const MINUTES_IN_AN_HOUR = 60;
+
     public function __construct(
         private int $hours,
         private int $minutes = 0
     ) {
-        $this->reformat();
+        $this->normalizeTime();
     }
 
     public function add(int $minutes): self
@@ -48,61 +25,27 @@ class Clock
         return $this;
     }
 
-    public function formatMinutes(): void
+    private function normalizeMinutes(): void
     {
-        if ($this->minutes >= self::DAY_MINUTES) {
-            $this->hours += (intdiv($this->minutes, self::DAY_MINUTES) % self::DAY_HOURS);
-            $this->hours %= self::DAY_HOURS;
-            $this->minutes %= self::DAY_MINUTES;
+        $totalMinutes = $this->hours * self::MINUTES_IN_AN_HOUR + $this->minutes;
+        $normalizedMinutes = $totalMinutes % (self::HOURS_IN_A_DAY * self::MINUTES_IN_AN_HOUR);
+
+        if ($normalizedMinutes < 0) {
+            $normalizedMinutes += self::HOURS_IN_A_DAY * self::MINUTES_IN_AN_HOUR;
         }
 
-        if ($this->minutes < 0) {
-            $tempMinutes = (int) abs($this->minutes);
-            if ($tempMinutes >= self::DAY_MINUTES) {
-                if ($this->hours == 0) {
-                    $this->hours = self::DAY_HOURS;
-                }
-                $this->hours -= (intdiv($tempMinutes, self::DAY_MINUTES) % self::DAY_HOURS);
-                $this->hours %= self::DAY_HOURS;
-                if ($tempMinutes % self::DAY_MINUTES > 0) {
-                    if ($this->hours == 0) {
-                        $this->hours = self::DAY_HOURS;
-                    }
-                    $this->hours--;
-                    $this->hours %= self::DAY_HOURS;
-                    $this->minutes = self::DAY_MINUTES - ($tempMinutes % self::DAY_MINUTES);
-                }
-            } else {
-                if ($this->hours == 0) {
-                    $this->hours = self::DAY_HOURS;
-                }
-                $this->hours--;
-                $this->hours %= self::DAY_HOURS;
-                $this->minutes = self::DAY_MINUTES - $tempMinutes;
-            }
-        }
+        $this->hours = intdiv($normalizedMinutes, self::MINUTES_IN_AN_HOUR);
+        $this->minutes = $normalizedMinutes % self::MINUTES_IN_AN_HOUR;
     }
 
-    public function formatHours(): void
+    private function normalizeTime(): void
     {
-        if ($this->hours >= self::DAY_HOURS) {
-            $this->hours %= self::DAY_HOURS;
-        }
-
-        if ($this->hours < 0) {
-            $this->hours = self::DAY_HOURS - (((int) abs($this->hours)) % self::DAY_HOURS);
-        }
-    }
-
-    public function reformat(): void
-    {
-        $this->formatMinutes();
-        $this->formatHours();
+        $this->normalizeMinutes();
     }
 
     public function __toString(): string
     {
-        $this->reformat();
+        $this->normalizeTime();
         return sprintf("%02d:%02d", $this->hours, $this->minutes);
     }
 }
