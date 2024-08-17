@@ -30,6 +30,8 @@ class Game
     private int $currentRoll = 0;
     private const PINS_COUNT = 10;
 
+    private const DOUBLE_PINS_COUNT = 20;
+
     public function __construct()
     {
         $this->rolls = array_fill(0, 30, 0);
@@ -63,10 +65,10 @@ class Game
         if (
             $this->currentRoll <= 0 ||
             $this->currentRoll < 10 ||
-            ($this->currentRoll > 2 * self::PINS_COUNT && $this->rolls[19] == 0) ||
+            ($this->currentRoll > self::DOUBLE_PINS_COUNT && $this->rolls[19] == 0) ||
             $this->currentRoll === 19 && $this->rolls[18] === self::PINS_COUNT && $this->rolls[19] !== self::PINS_COUNT ||
-            $this->currentRoll === 2 * self::PINS_COUNT && $this->rolls[18] === self::PINS_COUNT && $this->rolls[19] === self::PINS_COUNT ||
-            $this->currentRoll === 2 * self::PINS_COUNT && ($this->rolls[18] + $this->rolls[19] === self::PINS_COUNT) && !$this->rolls[2 * self::PINS_COUNT]
+            $this->currentRoll === self::DOUBLE_PINS_COUNT && $this->rolls[18] === self::PINS_COUNT && $this->rolls[19] === self::PINS_COUNT ||
+            $this->currentRoll === self::DOUBLE_PINS_COUNT && ($this->rolls[18] + $this->rolls[19] === self::PINS_COUNT) && !$this->rolls[self::DOUBLE_PINS_COUNT]
         ) {
             throw new Exception();
         }
@@ -114,7 +116,11 @@ class Game
     private function strikeBonus(int $frameIndex): int
     {
         $bonus = $this->rolls[$frameIndex + 1] + $this->rolls[$frameIndex + 2];
-        if ($bonus > self::PINS_COUNT && $frameIndex + 2 === 2 * self::PINS_COUNT && $this->rolls[$frameIndex + 2] !== self::PINS_COUNT) {
+        if (
+            $bonus > self::PINS_COUNT
+            && $frameIndex + 2 === self::DOUBLE_PINS_COUNT
+            && $this->rolls[$frameIndex + 2] !== self::PINS_COUNT
+        ) {
             throw new Exception();
         }
 
