@@ -41,7 +41,7 @@ function brackets_match(string $input): bool
             continue;
         }
 
-        if (isOpenedBracket($input[$i], array_keys($brackets))) {
+        if (isOpenedBracket($input[$i], $brackets)) {
             array_push($stack, $input[$i]);
         } elseif (!empty($stack) && $brackets[end($stack)] === $input[$i]) {
             array_pop($stack);
@@ -55,10 +55,10 @@ function brackets_match(string $input): bool
 
 function isBracket(string $char): bool
 {
-    return (bool) preg_match('/[(){}\[\]]/', $char);
+    return in_array($char, ['(', ')', '[', ']', '{', '}']);
 }
 
-function isOpenedBracket(string $bracketCharacter, array $openedBrackets): bool
+function isOpenedBracket(string $bracketCharacter, array $bracketsMap): bool
 {
-    return in_array($bracketCharacter, $openedBrackets);
+    return array_key_exists($bracketCharacter, $bracketsMap);
 }
