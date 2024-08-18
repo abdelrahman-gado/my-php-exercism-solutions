@@ -50,7 +50,7 @@ function brackets_match(string $input): bool
         }
     }
 
-    return empty($stack);
+    return count($stack) === 0;
 }
 
 function isBracket(string $char): bool
