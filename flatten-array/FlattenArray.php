@@ -24,13 +24,14 @@
 
 declare(strict_types=1);
 
-function flatten(array $input, array &$result = []): array
+function flatten(array $input): array
 {
+    $result = [];
     foreach ($input as $value) {
         if (!is_array($value) && $value !== null) {
             $result[] = $value;
         } elseif (is_array($value)) {
-            flatten($value, $result);
+            array_push($result, ...flatten($value));
         }
     }
 
