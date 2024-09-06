@@ -32,11 +32,7 @@ function slices(string $digits, int $series): array
     }
 
     $seriesArr = [];
-    for ($i = 0; $i < $digitsLength; $i++) {
-        if ($i + $series > $digitsLength) {
-            break;
-        }
-
+    for ($i = 0; $i <= $digitsLength - $series; $i++) {
         $seriesArr[] = substr($digits, $i, $series);
     }
 
