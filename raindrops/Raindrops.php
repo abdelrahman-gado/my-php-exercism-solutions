@@ -39,5 +39,5 @@ function raindrops(int $number): string
         $raindropStr .= 'Plong';
     }
 
-    return (strlen($raindropStr) > 0) ? $raindropStr : (string) $number;    
+    return ($raindropStr !== '') ? $raindropStr : (string) $number;    
 }
