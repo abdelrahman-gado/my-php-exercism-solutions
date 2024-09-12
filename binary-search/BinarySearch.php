@@ -32,7 +32,7 @@ function find(int $needle, array $haystack): int
     while ($start <= $end) {
         $middle = $start + (int) (($end - $start) / 2);
 
-        if ($needle == $haystack[$middle]) {
+        if ($needle === $haystack[$middle]) {
             return $middle;
         } elseif ($needle > $haystack[$middle]) {
             $start = $middle + 1;
