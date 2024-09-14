@@ -28,8 +28,7 @@ class Bob
 {
     public function respondTo(string $str): string
     {
-        $strLength = strlen($str);
-        $sanitized = $this->sanitizeStr($str, $strLength);
+        $sanitized = preg_replace('/[^A-Za-z]/', '', $str);
         $trimmed = trim($str);
 
         return match(true) {
@@ -43,34 +42,22 @@ class Bob
 
     private function isSayingNothing(string $sanitized, string $trimmed): bool
     {
-        return $this->isEmpty($sanitized, $trimmed);
+        return $sanitized == '' && $trimmed == '';
     }
 
     private function isQuestionWithYelling(string $sanitized, string $trimmed): bool
     {
-        return $this->isStringUpper($sanitized) && $this->isEndsWithQuestion($trimmed) && !$this->isEmpty($trimmed, $sanitized);
+        return $this->isStringUpper($sanitized) && $this->endsWithQuestion($trimmed) && !$this->isSayingNothing($trimmed, $sanitized);
     }
 
     private function isYellingAtHim(string $sanitized, string $trimmed): bool
     {
-        return $this->isStringUpper($sanitized) && !$this->isEndsWithQuestion($trimmed) && !$this->isEmpty($trimmed, $sanitized);
+        return $this->isStringUpper($sanitized) && !$this->endsWithQuestion($trimmed) && !$this->isSayingNothing($trimmed, $sanitized);
     }
 
     private function isAQuestion(string $sanitized, string $trimmed): bool
     {
-        return !$this->isStringUpper($sanitized) && $this->isEndsWithQuestion($trimmed) && !$this->isEmpty($trimmed, $sanitized);
-    }
-
-    private function sanitizeStr(string $str, int $strLength): string
-    {
-        $sanitized = '';
-        for ($i = 0; $i < $strLength; $i++) {
-            if (ctype_alpha($str[$i])) {
-                $sanitized .= $str[$i];
-            }
-        }
-
-        return $sanitized;
+        return !$this->isStringUpper($sanitized) && $this->endsWithQuestion($trimmed) && !$this->isSayingNothing($trimmed, $sanitized);
     }
 
     private function isStringUpper(string $str): bool
@@ -78,18 +65,13 @@ class Bob
         return ctype_upper($str);
     }
 
-    private function isEndsWithExclamation(string $str): bool
+    private function endsWithExclamation(string $str): bool
     {
         return str_ends_with($str, '!');
     }
 
-    private function isEndsWithQuestion(string $str): bool
+    private function endsWithQuestion(string $str): bool
     {
         return str_ends_with($str, '?');
-    }
-
-    private function isEmpty(string $trimmed, string $sanitized): bool
-    {
-        return $sanitized == '' && $trimmed == '';
     }
 }
