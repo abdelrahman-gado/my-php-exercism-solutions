@@ -26,63 +26,22 @@ declare(strict_types=1);
 
 function encode(string $input): string
 {
-    $inputLength = strlen($input);
-    if ($inputLength <= 0) {
-        return '';
-    }
-
-    $previous = $input[0];
-    $encodedArray = [];
-
-    $i = 1;
-    $characterCount = 1;
-    while ($i < $inputLength) {
-        if ($input[$i] === $previous) {
-            $characterCount++;
-        } else {
-            if ($characterCount === 1) {
-                array_push($encodedArray, $previous);
-            } else {
-                array_push($encodedArray, $characterCount, $previous);
-            }
-
-            $previous = $input[$i];
-            $characterCount = 1;
-        }
-
-        $i++;
-    }
-
-    if ($characterCount === 1) {
-        array_push($encodedArray, $previous);
-    } else {
-        array_push($encodedArray, $characterCount, $previous);
-    }
-
-    return implode('', $encodedArray);
+    return preg_replace_callback(
+        '/(.)\1+/',
+        function ($match) {
+            return strlen($match[0]) . $match[1];
+        },
+        $input
+    );
 }
 
 function decode(string $input): string
 {
-    $inputLength = strlen($input);
-    if ($inputLength <= 0) {
-        return '';
-    }
-
-    $decoded = '';
-
-    $i = 0;
-    $count = '';
-    while ($i < $inputLength) {
-        if (ctype_digit($input[$i])) {
-            $count .= $input[$i];
-        } else {
-            $decoded .= str_repeat($input[$i], (int) $count ?: 1);
-            $count = '';
-        }
-
-        $i++;
-    }
-
-    return $decoded;
+    return preg_replace_callback(
+        '/(\d+)(\D)/',
+        function ($match) {
+            return str_repeat($match[2], (int) $match[1]);
+        },
+        $input
+    );
 }
