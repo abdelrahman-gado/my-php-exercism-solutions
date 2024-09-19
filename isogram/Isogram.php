@@ -31,5 +31,5 @@ function isIsogram(string $word): bool
     }
     
     $sanitizedWord = strtolower(preg_replace("/[ -]/", '', $word));
-    return count(array_unique(str_split($sanitizedWord))) === strlen($sanitizedWord);
+    return count(array_unique(mb_str_split($sanitizedWord))) === mb_strlen($sanitizedWord);
 }
