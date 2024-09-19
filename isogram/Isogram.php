@@ -26,16 +26,10 @@ declare(strict_types=1);
 
 function isIsogram(string $word): bool
 {
-    $wordLength = strlen($word);
-    $characterMap = [];
-    for ($i = 0; $i < $wordLength; $i++) {
-        $lowerCasedCharacter = strtolower($word[$i]);
-        if (ctype_alpha($word[$i]) && array_key_exists($lowerCasedCharacter, $characterMap)) {
-            return false;
-        } elseif (ctype_alpha($word[$i]) && !array_key_exists($lowerCasedCharacter, $characterMap)) {
-            $characterMap[$lowerCasedCharacter] = 1;
-        }
+    if ($word === '') {
+        return true;
     }
-
-    return true;
+    
+    $sanitizedWord = strtolower(preg_replace("/[ -]/", '', $word));
+    return count(array_unique(str_split($sanitizedWord))) === strlen($sanitizedWord);
 }
