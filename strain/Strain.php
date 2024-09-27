@@ -28,25 +28,25 @@ class Strain
 {
     public function keep(array $list, callable $predicate): array
     {
-        $kept = [];
-        foreach ($list as $item) {
-            if ($predicate($item)) {
-                $kept[] = $item;
-            }
-        }
-
-        return $kept;
+        return $this->filter($list, $predicate, true);
     }
 
     public function discard(array $list, callable $predicate): array
     {
-        $discarded = [];
+        return $this->filter($list, $predicate, false);
+    }
+
+
+    public function filter(array $list, callable $predicate, bool $predicateCondition): array
+    {
+        $filtered = [];
         foreach ($list as $item) {
-            if (!$predicate($item)) {
-                $discarded[] = $item;
+            $condition = $predicateCondition ? $predicate($item) : !$predicate($item);
+            if ($condition) {
+                $filtered[] = $item;
             }
         }
 
-        return $discarded;
+        return $filtered;
     }
 }
