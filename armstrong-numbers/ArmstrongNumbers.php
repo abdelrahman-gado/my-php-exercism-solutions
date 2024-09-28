@@ -27,10 +27,10 @@ declare(strict_types=1);
 function isArmstrongNumber(int $number): bool
 {
     $numberAsString = (string) $number;
-    $numberStrLength = strlen($numberAsString);
+    $numberDigitCount = strlen($numberAsString);
     $sum = 0;
-    for ($i = 0; $i < $numberStrLength; $i++) {
-        $sum += ((int) $numberAsString[$i]) ** $numberStrLength;
+    for ($i = 0; $i < $numberDigitCount; $i++) {
+        $sum += ((int) $numberAsString[$i]) ** $numberDigitCount;
     }
 
     return $sum === $number;
