@@ -37,12 +37,11 @@ class Strain
     }
 
 
-    public function filter(array $list, callable $predicate, bool $predicateCondition): array
+    private function filter(array $list, callable $predicate, bool $keep): array
     {
         $filtered = [];
         foreach ($list as $item) {
-            $condition = $predicateCondition ? $predicate($item) : !$predicate($item);
-            if ($condition) {
+            if ($keep === $predicate($item)) {
                 $filtered[] = $item;
             }
         }
