@@ -28,7 +28,12 @@ class EliudsEggs
 {
     public function eggCount(int $displayValue): int
     {
-        $binaryValueArr = str_split(decbin($displayValue));
-        return array_reduce($binaryValueArr, fn ($count, $bit) => $count += $bit, 0);
+        $count = 0;
+        while ($displayValue > 0) {
+            $count += $displayValue & 1;
+            $displayValue >>= 1;
+        }
+
+        return $count;
     }
 }
