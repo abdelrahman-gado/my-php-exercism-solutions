@@ -30,7 +30,7 @@ class LinkedList
 
     public function push(int $item): void
     {
-        array_push($this->items, $item);
+        $this->items[] = $item;
     }
 
     public function pop(): int
