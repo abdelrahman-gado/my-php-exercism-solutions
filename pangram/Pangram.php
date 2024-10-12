@@ -28,9 +28,9 @@ function isPangram(string $string): bool
 {
     $ALPHA_COUNT = 26;
     $set = [];
-    foreach (str_split($string) as $character) {
+    foreach (str_split(strtolower($string)) as $character) {
         if (ctype_alpha($character)) {
-            $set[strtolower($character)] = 1;
+            $set[$character] = 1;
             if (count($set) === $ALPHA_COUNT) {
                 return true;
             }
