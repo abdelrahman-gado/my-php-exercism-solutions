@@ -26,9 +26,9 @@ declare(strict_types=1);
 
 class RotationalCipher
 {
-    const MAX_ALPHA_CHARS = 26;
-    const ALPHA_START_CHAR_IN_LOWERCASE = 'a';
-    const ALPHA_START_CHAR_IN_UPPERCASE = 'A';
+    private const MAX_ALPHA_CHARS = 26;
+    private const ALPHA_START_CHAR_IN_LOWERCASE = 'a';
+    private const ALPHA_START_CHAR_IN_UPPERCASE = 'A';
 
     public function rotate(string $text, int $shift): string
     {
@@ -49,11 +49,13 @@ class RotationalCipher
 
     private function rotateCharacter(string $character, int $shift): string
     {
-        $alphaStartChar = $this->isCapitalCharacter($character) ? self::ALPHA_START_CHAR_IN_UPPERCASE : self::ALPHA_START_CHAR_IN_LOWERCASE;
-        if (ctype_alpha($character)) {
-            return chr(((ord($character) - ord($alphaStartChar) + $shift) % self::MAX_ALPHA_CHARS) + ord($alphaStartChar));
-        } else {
+        $alphaStartChar = $this->isCapitalCharacter($character)
+            ? self::ALPHA_START_CHAR_IN_UPPERCASE 
+            : self::ALPHA_START_CHAR_IN_LOWERCASE;
+
+        if (!ctype_alpha($character)) {
             return $character;
         }
+        return chr(((ord($character) - ord($alphaStartChar) + $shift) % self::MAX_ALPHA_CHARS) + ord($alphaStartChar));
     }
 }
