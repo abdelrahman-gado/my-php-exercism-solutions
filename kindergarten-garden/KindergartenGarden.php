@@ -27,49 +27,47 @@ declare(strict_types=1);
 class KindergartenGarden
 {
     private array $diagramArray = [];
-    private array $studentPositions = [];
-    private array $seedMap = [];
+    private const STUDENT_POSITIONS = [
+        'Alice' => 0,
+        'Bob' => 1,
+        'Charlie' => 2,
+        'David' => 3,
+        'Eve' => 4,
+        'Fred' => 5,
+        'Ginny' => 6,
+        'Harriet' => 7,
+        'Ileana' => 8,
+        'Joseph' => 9,
+        'Kincaid' => 10,
+        'Larry' => 11,
+    ];
+    private const SEED_MAP = [
+        'G' => 'grass',
+        'C' => 'clover',
+        'R' => 'radishes',
+        'V' => 'violets'
+    ];
 
     public function __construct(string $diagram)
     {
         $this->diagramArray = explode("\n", $diagram);
-        $this->studentPositions = [
-            'Alice' => 0,
-            'Bob' => 1,
-            'Charlie' => 2,
-            'David' => 3,
-            'Eve' => 4,
-            'Fred' => 5,
-            'Ginny' => 6,
-            'Harriet' => 7,
-            'Ileana' => 8,
-            'Joseph' => 9,
-            'Kincaid' => 10,
-            'Larry' => 11,
-        ];
-
-        $this->seedMap = [
-            'G' => 'grass',
-            'C' => 'clover',
-            'R' => 'radishes',
-            'V' => 'violets'
-        ];
     }
 
     public function plants(string $student): array
     {
-        $plants = [];
-        $position = $this->studentPositions[$student];
-        $plants = array_merge($plants, $this->getSeedNames($this->diagramArray[0], $position));
-        return array_merge($plants, $this->getSeedNames($this->diagramArray[1], $position));
+        $position = self::STUDENT_POSITIONS[$student];
+        return array_merge(
+            array_merge([], $this->getSeedNames($this->diagramArray[0], $position)),
+            $this->getSeedNames($this->diagramArray[1], $position)
+        );
     }
 
     private function getSeedNames(string $row, int $studentPosition): array
     {
         $cup = substr($row, ($studentPosition * 2), 2);
         return [
-            $this->seedMap[$cup[0]],
-            $this->seedMap[$cup[1]],
+            self::SEED_MAP[$cup[0]],
+            self::SEED_MAP[$cup[1]],
         ];
     }
 }
