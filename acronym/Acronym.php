@@ -37,7 +37,7 @@ function acronym(string $text): string
 
     $acronymStr = '';
     foreach ($words as $word) {
-        $acronymStr .= mb_strtoupper($word[0]);
+        $acronymStr .= mb_strtoupper(mb_substr($word, 0, 1));
 
         if (preg_match('/[A-Za-z]+([A-Z])[A-Za-z]+/', $word, $matches)) {
             $acronymStr .= mb_strtoupper(implode('', array_slice($matches, 1)));
@@ -51,9 +51,3 @@ function acronym(string $text): string
     return $acronymStr;
 }
 
-//var_dump(acronym('Portable Network Graphics'));
-//var_dump(acronym('Ruby on Rails'));
-//var_dump(acronym('HyperText Markup Language'));
-//var_dump(acronym('PHP: Hypertext Preprocessor'));
-//var_dump(acronym('Complementary metal-oxide semiconductor'));
-//var_dump(acronym('Специализированная процессорная часть'));
