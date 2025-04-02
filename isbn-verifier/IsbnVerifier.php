@@ -42,9 +42,9 @@ class IsbnVerifier
     {
         $result = 0;
         for ($i = 10; $i >= 1; $i--) {
-            $digit = $isbn[10 - $i];
+            $digit = $isbn[self::ISBN_LENGTH - $i];
             if ($i === 1 && $digit === 'X') {
-                $digit = 10;
+                $digit = self::ISBN_LENGTH;
             } elseif (!is_numeric($digit)) {
                 return -1;
             }
