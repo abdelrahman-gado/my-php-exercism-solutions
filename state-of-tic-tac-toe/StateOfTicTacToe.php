@@ -35,101 +35,63 @@ class StateOfTicTacToe
 {
     public function gameState(array $board): State
     {
-        $placesCount = $this->countPlaces($board);
-        if (!$this->checkValidBoard($board, $placesCount)) {
-            throw new RuntimeException('Invalid board');
+        $xCount = $this->countPlayer($board, 'X');
+        $oCount = $this->countPlayer($board, 'O');
+
+        if ($xCount < $oCount) {
+            throw new \RuntimeException("Wrong turn order: O started");
         }
 
-        $winner = $this->findWinner($board);
-        if ($winner) {
+        if ($xCount !== $oCount && $xCount !== $oCount + 1) {
+            throw new \RuntimeException("Wrong turn order: X went twice");
+        }
+
+        $xWon = $this->hasWon($board, 'X');
+        $oWon = $this->hasWon($board, 'O');
+
+        if ($xWon && $oWon) {
+            throw new \RuntimeException("Impossible board: game should have ended after the game was won");
+        }
+
+        if ($xWon || $oWon) {
             return State::Win;
         }
 
-        return $placesCount[' '] === 0 ? State::Draw : State::Ongoing;
+        if ($xCount + $oCount === 9) {
+            return State::Draw;
+        }
+
+        return State::Ongoing;
     }
 
-    private function findWinner(array $board): string|bool
+    private function countPlayer(array $board, string $player): int
     {
-        return match (true) {
-            // check rows
-            $board[0][0] === $board[0][1] && $board[0][1] === $board[0][2] && $board[0][0] === $board[0][2] && $board[0][0] !== ' ' => $board[0][0],
-            $board[1][0] === $board[1][1] && $board[1][1] === $board[1][2] && $board[1][0] === $board[1][2] && $board[1][0] !== ' ' => $board[1][0],
-            $board[2][0] === $board[2][1] && $board[2][1] === $board[2][2] && $board[2][0] === $board[2][2] && $board[2][0] !== ' ' => $board[2][0],
-
-            // check columns
-            $board[0][0] === $board[1][0] && $board[1][0] === $board[2][0] && $board[0][0] === $board[2][0] && $board[0][0] !== ' ' => $board[0][0],
-            $board[0][1] === $board[1][1] && $board[1][1] === $board[2][1] && $board[0][1] === $board[2][1] && $board[0][1] !== ' ' => $board[0][1],
-            $board[0][2] === $board[1][2] && $board[1][2] === $board[2][2] && $board[2][2] === $board[0][2] && $board[0][2] !== ' ' => $board[0][2],
-
-            // check diagonals
-            $board[0][0] === $board[1][1] && $board[1][1] === $board[2][2] && $board[2][2] === $board[0][0] && $board[0][0] !== ' ' => $board[0][0],
-            $board[0][2] === $board[1][1] && $board[1][1] === $board[2][0] && $board[2][0] === $board[0][2] && $board[0][2] !== ' ' => $board[0][2],
-
-            default => false,
-        };
-    }
-
-    private function countPlaces(array $board): array
-    {
-        $placesCount = ['X' => 0, 'O' => 0, ' ' => 0];
+        $count = 0;
         foreach ($board as $row) {
-            foreach (str_split($row) as $place) {
-                $placesCount[$place]++;
+            foreach (str_split($row) as $cell) {
+                if ($cell === $player) {
+                    $count++;
+                }
             }
         }
 
-        return $placesCount;
+        return $count;
     }
 
-    private function checkValidBoard(array $board, array $placeCount): bool
+    private function hasWon(array $board, string $player): bool
     {
-        if ($placeCount['O'] > $placeCount['X']) {
-            throw new RuntimeException('Wrong turn order: O started');
+        for ($i = 0; $i < 3; $i++) {
+            if (
+                $board[$i][0] === $player && $board[$i][1] === $player && $board[$i][2] === $player
+                ||
+                $board[0][$i] === $player && $board[1][$i] === $player && $board[2][$i] === $player
+            ) {
+                return true;
+            }
         }
 
-        if ($placeCount['X'] > $placeCount['O'] + 1) {
-            throw new RuntimeException('Wrong turn order: X went twice');
-        }
-
-        $winner = $this->findWinner($board);
-        if (
-            ($winner === 'X' && ($placeCount['X'] <= $placeCount['O'] || ($placeCount[' '] === 0 && !$this->rowColumnVictory($board) && !$this->diagonalVictory($board))))
+        return $board[0][0] === $player && $board[1][1] === $player && $board[2][2] === $player
             ||
-            ($winner === 'O' && $placeCount['X'] > $placeCount['O'])
-        ) {
-            throw new RuntimeException('Impossible board: game should have ended after the game was won');
-        }
-
-        return true;
-    }
-
-    private function rowColumnVictory(array $board): bool
-    {
-        return (
-            $board[0][0] === $board[0][1] && $board[0][1] === $board[0][2] && $board[0][0] === $board[0][2] && $board[0][0] !== ' '
-            &&
-            $board[0][0] === $board[1][0] && $board[1][0] === $board[2][0] && $board[0][0] === $board[2][0] && $board[0][0] !== ' '
-        ) || (
-            $board[0][0] === $board[0][1] && $board[0][1] === $board[0][2] && $board[0][0] === $board[0][2] && $board[0][0] !== ' '
-            &&
-            $board[0][2] === $board[1][2] && $board[1][2] === $board[2][2] && $board[2][2] === $board[0][2] && $board[0][2] !== ' '
-        ) || (
-            $board[2][0] === $board[2][1] && $board[2][1] === $board[2][2] && $board[2][0] === $board[2][2] && $board[2][0] !== ' '
-            &&
-            $board[0][0] === $board[1][0] && $board[1][0] === $board[2][0] && $board[0][0] === $board[2][0] && $board[0][0] !== ' '
-        ) || (
-            $board[2][0] === $board[2][1] && $board[2][1] === $board[2][2] && $board[2][0] === $board[2][2] && $board[2][0] !== ' '
-            &&
-            $board[0][2] === $board[1][2] && $board[1][2] === $board[2][2] && $board[2][2] === $board[0][2] && $board[0][2] !== ' '
-        );
-    }
-
-    private function diagonalVictory(array $board): bool
-    {
-        return (
-            $board[0][0] === $board[1][1] && $board[1][1] === $board[2][2] && $board[2][2] === $board[0][0] && $board[0][0] !== ' '
-            ||
-            $board[0][2] === $board[1][1] && $board[1][1] === $board[2][0] && $board[2][0] === $board[0][2] && $board[0][2] !== ' '
-        );
+            $board[0][2] === $player && $board[1][1] === $player && $board[2][0] === $player;
     }
 }
