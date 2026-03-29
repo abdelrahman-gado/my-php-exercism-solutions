@@ -62,17 +62,26 @@ function getLastHalf(array $items): array
 
 function getTargetLetterLine(int $targetCode): string
 {
-    $max = ($targetCode - ord(FIRST_CHAR)) + ($targetCode - ord(FIRST_CHAR)) - 1;
-    return chr($targetCode) . str_repeat(' ', $max) . chr($targetCode);
+    return chr($targetCode) . str_repeat(' ', getMax($targetCode)) . chr($targetCode);
+}
+
+function getMax(int $targetCode): int
+{
+    return ($targetCode - ord(FIRST_CHAR)) + ($targetCode - ord(FIRST_CHAR)) - 1;
 }
 
 function getLine(int $currentCode, int $targetCode)
 {
     $difference = $targetCode - $currentCode;
-    $max = ($targetCode - ord(FIRST_CHAR)) + ($targetCode - ord(FIRST_CHAR)) - 1;
-    if (chr($currentCode) === FIRST_CHAR) {
-        return str_repeat(' ', $difference) . FIRST_CHAR . str_repeat(' ', $difference);
+    $currentLetter = chr($currentCode);
+    $padding = str_repeat(' ', $difference);
+    if ($currentLetter === FIRST_CHAR) {
+        return $padding . FIRST_CHAR . $padding;
     }
 
-    return str_repeat(' ', $difference) . chr($currentCode) . str_repeat(' ', $max - ($difference) - ($difference)) . chr($currentCode) . str_repeat(' ', $difference);
+    return $padding 
+        . $currentLetter 
+        . str_repeat(' ', getMax($targetCode) - ($difference) - ($difference)) 
+        . $currentLetter 
+        . $padding;
 }
