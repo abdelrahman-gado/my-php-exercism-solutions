@@ -32,24 +32,26 @@ class Series
 
     public function largestProduct(int $span): int
     {
-        $products = [];
+        $maxProduct = 0;
         $inputLength = strlen($this->input);
+        $inputArr = str_split($this->input);
+
         if ($span > $inputLength || $span < 0 || (!is_numeric($this->input) && $span !== 0)) {
             throw new InvalidArgumentException();
         }
         
         for ($i = 0; $i < $inputLength - $span; $i++) {
-            $products[] = $this->getProduct($i, $span);
+            $currentProduct = $this->getProduct($inputArr, $i, $span);
+            $maxProduct = max($maxProduct, $currentProduct);
         }
 
-        $lastProduct = $this->getProduct($i, $span);
-        $products[] = $lastProduct;
+        $lastProduct = $this->getProduct($inputArr, $i, $span);
 
-        return max($products);
+        return max($lastProduct, $maxProduct);
     }
     
-    private function getProduct(int $startIndex, int $span): int
+    private function getProduct(array $inputArr, int $startIndex, int $span): int
     {
-        return array_product(str_split(substr($this->input, $startIndex, $span))); 
+        return array_product(array_slice($inputArr, $startIndex, $span)); 
     }
 }
