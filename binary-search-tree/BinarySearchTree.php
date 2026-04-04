@@ -26,15 +26,13 @@ declare(strict_types=1);
 
 class BinarySearchTree
 {
-    public ?BinarySearchTree $left;
-    public ?BinarySearchTree $right;
+    public ?BinarySearchTree $left = null;
+    public ?BinarySearchTree $right = null;
     public int $data;
 
     public function __construct(int $data)
     {
         $this->data = $data;
-        $this->left = null;
-        $this->right = null;
     }
 
     public function insert(int $data): void
@@ -45,14 +43,14 @@ class BinarySearchTree
                 if ($current->left !== null) {
                     $current = $current->left;
                 } else {
-                    $current->left = new BinarySearchTree($data);
+                    $current->left = new self($data);
                     return;
                 }
             } else {
                 if ($current->right !== null) {
                     $current = $current->right;
                 } else {
-                    $current->right = new BinarySearchTree($data);
+                    $current->right = new self($data);
                     return;
                 }
             }
@@ -62,18 +60,15 @@ class BinarySearchTree
     public function getSortedData(): array
     {
         $result = [];
-        $this->inOrderTraversal($this, $result);
-        return $result;
-    }
-
-    private function inOrderTraversal(?BinarySearchTree $node, array &$result): void
-    {
-        if ($node === null) {
-            return;
+        if ($this->left !== null) {
+            $result = array_merge($this->left->getSortedData(), $result);
         }
 
-        $this->inOrderTraversal($node->left, $result);
-        $result[] = $node->data;
-        $this->inOrderTraversal($node->right, $result);
+        $result[] = $this->data;
+
+        if ($this->right !== null) {
+            $result = array_merge($result, $this->right->getSortedData());
+        }
+        return $result;
     }
 }
